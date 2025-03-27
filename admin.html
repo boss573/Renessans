@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Админ-панель</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .user-table th, .user-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .user-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Зарегистрированные пользователи</h1>
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Email</th>
+        <th>Дата регистрации</th>
+      </tr>
+    </thead>
+    <tbody id="usersTableBody">
+      <!-- Сюда будут добавляться пользователи -->
+    </tbody>
+  </table>
+  <a href="index.html" class="back-link">← На главную</a>
+
+  <script src="app.js"></script>
+</body>
+</html>

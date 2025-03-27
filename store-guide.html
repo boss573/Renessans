@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гид по магазину</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для страницы гида */
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--parchment);
+            color: var(--stone-border);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--blood-red);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .guide-section {
+            margin-bottom: 2rem;
+        }
+
+        .guide-section h2 {
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin-bottom: 1rem;
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .guide-section p {
+            font-size: 1rem;
+            color: var(--stone-border);
+        }
+
+        .guide-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .guide-section ul li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .guide-section ul li::before {
+            content: "•";
+            color: var(--gold-accent);
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -0.3rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--blood-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <h1>Гид по магазину</h1>
+
+        <!-- Раздел "Как пользоваться сайтом" -->
+        <div class="guide-section">
+            <h2>Как пользоваться сайтом</h2>
+            <p>Наш магазин предлагает удобный интерфейс для поиска и покупки товаров. Вот несколько советов, которые помогут вам:</p>
+            <ul>
+                <li>Используйте фильтры в разделе "Категории", чтобы быстро найти нужные товары.</li>
+                <li>Добавляйте понравившиеся товары в корзину для оформления заказа.</li>
+                <li>Проверяйте раздел "Календарь распродаж", чтобы не пропустить выгодные предложения.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Как найти товары" -->
+        <div class="guide-section">
+            <h2>Как найти товары</h2>
+            <p>Чтобы найти нужный товар, выполните следующие шаги:</p>
+            <ul>
+                <li>Воспользуйтесь поиском по сайту, введя название товара в строку поиска.</li>
+                <li>Изучите категории товаров в верхнем меню.</li>
+                <li>Примените фильтры по цене, категории или другим параметрам.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Как оформить заказ" -->
+        <div class="guide-section">
+            <h2>Как оформить заказ</h2>
+            <p>Оформление заказа в нашем магазине просто и удобно:</p>
+            <ul>
+                <li>Добавьте товары в корзину.</li>
+                <li>Перейдите в корзину и нажмите "Оформить заказ".</li>
+                <li>Заполните данные для доставки и выберите способ оплаты.</li>
+                <li>Подтвердите заказ и ожидайте уведомления о статусе.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Доставка и оплата" -->
+        <div class="guide-section">
+            <h2>Доставка и оплата</h2>
+            <p>Мы предлагаем несколько способов доставки и оплаты:</p>
+            <ul>
+                <li><strong>Доставка:</strong> Курьерская доставка, самовывоз, почта России.</li>
+                <li><strong>Оплата:</strong> Банковские карты, электронные кошельки, наличные при получении.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Часто задаваемые вопросы" -->
+        <div class="guide-section">
+            <h2>Часто задаваемые вопросы</h2>
+            <ul>
+                <li><strong>Как отследить заказ?</strong> После оформления заказа вы получите трек-номер для отслеживания.</li>
+                <li><strong>Можно ли вернуть товар?</strong> Да, в течение 14 дней с момента получения.</li>
+                <li><strong>Есть ли скидки для постоянных клиентов?</strong> Да, зарегистрируйтесь, чтобы получать специальные предложения.</li>
+            </ul>
+        </div>
+
+        <!-- Ссылка для возврата на главную страницу -->
+        <a href="index.html" class="back-link">← Вернуться на главную</a>
+    </div>
+</body>
+</html>

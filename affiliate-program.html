@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аффилиатная программа</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для страницы аффилиатной программы */
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--parchment);
+            color: var(--stone-border);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--blood-red);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .affiliate-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .affiliate-section {
+            margin-bottom: 2rem;
+        }
+
+        .affiliate-section h2 {
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin-bottom: 1rem;
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .affiliate-section p {
+            font-size: 1rem;
+            color: var(--stone-border);
+        }
+
+        .affiliate-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .affiliate-section ul li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .affiliate-section ul li::before {
+            content: "•";
+            color: var(--gold-accent);
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -0.3rem;
+        }
+
+        .affiliate-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            color: var(--stone-border);
+        }
+
+        .input-group input, .input-group textarea {
+            padding: 0.8rem;
+            border: 2px solid var(--gold-accent);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: var(--blood-red);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--blood-red);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: darken(var(--blood-red), 10%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--blood-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="affiliate-container">
+        <h1>Аффилиатная программа</h1>
+
+        <!-- Раздел "Что такое аффилиатная программа?" -->
+        <div class="affiliate-section">
+            <h2>Что такое аффилиатная программа?</h2>
+            <p>Наша аффилиатная программа позволяет вам зарабатывать, рекомендуя наши товары своим друзьям, подписчикам и посетителям вашего сайта. Вы получаете комиссию за каждую успешную продажу, совершённую по вашей ссылке.</p>
+        </div>
+
+        <!-- Раздел "Преимущества программы" -->
+        <div class="affiliate-section">
+            <h2>Преимущества программы</h2>
+            <ul>
+                <li>Высокие комиссионные от каждой продажи.</li>
+                <li>Простая регистрация и удобный личный кабинет.</li>
+                <li>Доступ к маркетинговым материалам (баннеры, ссылки, промокоды).</li>
+                <li>Регулярные выплаты без задержек.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Как это работает" -->
+        <div class="affiliate-section">
+            <h2>Как это работает</h2>
+            <p>Участие в программе простое и понятное:</p>
+            <ul>
+                <li>Зарегистрируйтесь в программе, заполнив форму ниже.</li>
+                <li>Получите уникальную реферальную ссылку.</li>
+                <li>Размещайте ссылку на нашем сайте в своих блогах, соцсетях или на сайте.</li>
+                <li>Получайте комиссию за каждую продажу, совершённую по вашей ссылке.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Условия участия" -->
+        <div class="affiliate-section">
+            <h2>Условия участия</h2>
+            <p>Чтобы стать участником программы, необходимо:</p>
+            <ul>
+                <li>Иметь активный блог, сайт или аккаунт в социальных сетях.</li>
+                <li>Соблюдать правила программы и не использовать запрещённые методы продвижения.</li>
+                <li>Быть готовым к сотрудничеству и выполнению условий программы.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Форма регистрации" -->
+        <div class="affiliate-section">
+            <h2>Форма регистрации</h2>
+            <form class="affiliate-form">
+                <div class="input-group">
+                    <label for="name">Ваше имя:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Ваш email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="website">Ваш сайт или блог (если есть):</label>
+                    <input type="url" id="website" name="website">
+                </div>
+                <div class="input-group">
+                    <label for="message">Сообщение (необязательно):</label>
+                    <textarea id="message" name="message" rows="5"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            </form>
+        </div>
+
+        <!-- Ссылка для возврата на главную страницу -->
+        <a href="index.html" class="back-link">← Вернуться на главную</a>
+    </div>
+</body>
+</html>

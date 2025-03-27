@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <style>
+        .product-image {
+            background: #f5f5f5 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23ccc" font-size="20">No Image</text></svg>') center/contain no-repeat;
+        }
+        
+        /* Общие стили для всех кнопок навигации */
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'EB Garamond', serif;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: white;
+            background-color: #3d2b1f;
+        }
+
+        .nav-btn:hover {
+            background-color: #2b1e14;
+            transform: translateY(-1px);
+        }
+
+        /* Специфичные стили для кнопки выхода */
+        .logout-btn {
+            border-color: #8b0000;
+        }
+
+        /* Специфичные стили для кнопки аккаунтов */
+        .accounts-btn {
+            background-color: #5a4a3a;
+        }
+
+        .accounts-btn:hover {
+            background-color: #4a3a2a;
+        }
+
+        /* Счетчик корзины */
+        .cart-counter {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #c5a47e;
+            color: #3d2b1f;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: 1px solid white;
+            transition: all 0.2s ease;
+        }
+
+        /* Иконки */
+        .nav-btn i {
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-btn:hover i {
+            transform: scale(1.05);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .cart-counter {
+                width: 18px;
+                height: 18px;
+                font-size: 0.65rem;
+            }
+        }
+
+        /* Стили для навигации */
+        .header {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-panel {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 25px;
+            margin-right: 15px;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .cart-container {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .cart-indicator {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: #3d2b1f;
+            color: white;
+            border-radius: 25px;
+        }
+        
+        /* Модальное окно аккаунтов */
+        #accountsModal .modal-content {
+            max-width: 600px;
+        }
+
+        .accounts-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #e6e0d8;
+            transition: background-color 0.2s;
+        }
+
+        .account-item:hover {
+            background-color: rgba(197, 164, 126, 0.1);
+        }
+
+        .account-info {
+            flex: 1;
+        }
+
+        .account-name {
+            font-weight: 500;
+            color: #3d2b1f;
+            margin-bottom: 3px;
+        }
+
+        .account-email {
+            font-size: 0.9rem;
+            color: #6b635b;
+        }
+
+        .account-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .account-btn {
+            background: none;
+            border: 1px solid #c5a47e;
+            border-radius: 15px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .account-btn:hover {
+            background-color: #c5a47e;
+            color: white;
+        }
+
+        .account-btn.login-btn {
+            border-color: #4CAF50;
+        }
+
+        .account-btn.login-btn:hover {
+            background-color: #4CAF50;
+        }
+
+        .account-btn.delete-btn {
+            border-color: #f44336;
+        }
+
+        .account-btn.delete-btn:hover {
+            background-color: #f44336;
+        }
+
+        /* Стили для модальных окон */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: #fdf5e6;
+            padding: 2.5rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 2px solid #c5a47e;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .modal-content h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: #8b0000;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                gap: 10px;
+            }
+            .nav-container {
+                gap: 10px;
+            }
+            .user-panel, .auth-buttons {
+                gap: 8px;
+            }
+            .cart-indicator {
+                gap: 3px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Имперская Торговая Палата - эксклюзивные товары премиум-класса">
+    <title>Магазин Ренессанс</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel+Decorative&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Угловые декорации -->
+<div class="decor-corner decor-corner-tl"></div>
+<div class="decor-corner decor-corner-tr"></div>
+<div class="decor-corner decor-corner-bl"></div>
+<div class="decor-corner decor-corner-br"></div>
+
+<!-- Плавающие декоративные элементы -->
+<i class="fas fa-crown floating-decor" style="top:20%; left:5%; font-size:4rem;"></i>
+<i class="fas fa-scroll floating-decor" style="top:70%; right:8%; font-size:5rem;"></i>
+<i class="fas fa-chess-queen floating-decor" style="top:40%; right:3%; font-size:3rem;"></i>
+<!-- Гербовые украшения -->
+<div class="heraldic-decoration" style="top:15%; right:15%;">⚜</div>
+<div class="heraldic-decoration" style="bottom:10%; left:10%;">♔</div>
+    <div class="background-elements">
+        <div class="marble-texture"></div>
+        <div class="floating-statue statue-1"></div>
+        <div class="floating-statue statue-2"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-top">
+            <div class="logo-container">
+                <img src="/img/Герб Имперской Торговой Палаты.png" alt="Герб" class="coat-of-arms">
+                <h1 id="siteTitle">Магазин Ренессанс</h1>
+            </div>
+            
+            <nav class="main-nav" aria-label="Основная навигация">
+                <div class="nav-container">
+                    <!-- Блок пользователя -->
+                    <div class="user-panel" id="userPanel">
+                        <div class="user-account">
+                            <i class="fas fa-user-circle user-icon"></i>
+                            <span id="username"></span>
+                        </div>
+                        <button class="nav-btn logout-btn" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="logout-text">Выйти</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Кнопки авторизации -->
+                    <div class="auth-buttons" id="authButtons">
+                        <a href="#" class="nav-btn" onclick="showModal('loginModal')">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Войти</span>
+                        </a>
+                        <a href="#" class="nav-btn" onclick="showModal('registerModal')">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Регистрация</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Корзина и аккаунты -->
+        <div class="cart-container">
+            <button class="nav-btn accounts-btn" onclick="showModal('accountsModal')">
+                <i class="fas fa-users"></i>
+                <span>Аккаунты</span>
+            </button>
+            <a href="#" class="nav-btn cart-indicator" onclick="showModal('cartModal')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Корзина</span>
+                <span class="cart-counter">0</span>
+            </a>
+        </div>
+    </header>
+
+    <section class="filters-section" aria-labelledby="filterHeading">
+        <h2 id="filterHeading" class="visually-hidden">Фильтры товаров</h2>
+        <div class="filter-group">
+            <!-- Категории -->
+            <fieldset class="category-filter">
+                <legend>Категории:</legend>
+                <div class="category-options">
+                    <label class="category-option">
+                        <input type="checkbox" name="category" value="all" checked class="category-checkbox">
+                        <span class="custom-checkbox"></span>
+                        <span class="category-name">Все категории</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" name="category" value="home" class="category-checkbox">
+                        <span class="custom-checkbox"></span>
+                        <span class="category-name">Товары для дома</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" name="category" value="clothing" class="category-checkbox">
+                        <span class="custom-checkbox"></span>
+                        <span class="category-name">Одежда</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" name="category" value="stationery" class="category-checkbox">
+                        <span class="custom-checkbox"></span>
+                        <span class="category-name">Канцтовары</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" name="category" value="furniture" class="category-checkbox">
+                        <span class="custom-checkbox"></span>
+                        <span class="category-name">Мебель</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" name="category" value="electronics" class="category-checkbox">
+                        <span class="custom-checkbox"></span>
+                        <span class="category-name">Электроника</span>
+                    </label>
+                </div>
+            </fieldset>
+            
+            <!-- Ценовой фильтр -->
+            <div class="price-filter-section">
+                <!-- Декоративные элементы -->
+                <i class="fas fa-coins price-filter-decoration decoration-1"></i>
+                <i class="fas fa-feather-alt price-filter-decoration decoration-2"></i>
+                
+                <div class="price-filter-container">
+                  <div class="filter-header">
+                    <i class="fas fa-search-dollar"></i>
+                    <h3>Диапазон цен</h3>
+                  </div>
+                  
+                  <div class="price-range-container">
+                    <div class="price-inputs">
+                      <div class="price-input-group">
+                        <label for="minPrice">Минимальная цена</label>
+                        <div class="price-input-wrapper">
+                          <input type="number" id="minPrice" min="0" max="100000" step="100" placeholder="0 ₽">
+                        </div>
+                      </div>
+                      
+                      <div class="price-input-group">
+                        <label for="maxPrice">Максимальная цена</label>
+                        <div class="price-input-wrapper">
+                          <input type="number" id="maxPrice" min="0" max="100000" step="100" placeholder="100 000 ₽">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="price-values">
+                      <span id="currentMinPrice">От 0 ₽</span>
+                      <span id="currentMaxPrice">До 100 000 ₽</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <!-- Новый блок сортировки -->
+            <div class="sort-section">
+                <div class="sort-container">
+                  <div class="sort-header">
+                    <i class="fas fa-sort-amount-down-alt"></i>
+                    <h3>Сортировка</h3>
+                  </div>
+                  <div class="sort-options">
+                    <div class="sort-option selected" data-sort="default">
+                      <i class="fas fa-random"></i>
+                      <span>По умолчанию</span>
+                    </div>
+                    <div class="sort-option" data-sort="name-asc">
+                      <i class="fas fa-sort-alpha-down"></i>
+                      <span>А → Я</span>
+                    </div>
+                    <div class="sort-option" data-sort="name-desc">
+                      <i class="fas fa-sort-alpha-up"></i>
+                      <span>Я → А</span>
+                    </div>
+                    <div class="sort-option" data-sort="price-asc">
+                      <i class="fas fa-sort-numeric-down"></i>
+                      <span>Цена (↑)</span>
+                    </div>
+                    <div class="sort-option" data-sort="price-desc">
+                      <i class="fas fa-sort-numeric-up"></i>
+                      <span>Цена (↓)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        </div>
+    </section>
+
+    <main class="product-grid" id="productGrid" aria-live="polite">
+        <!-- Товары будут загружаться здесь -->
+    </main>
+
+    <!-- Модальное окно корзины -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cartModal')">&times;</span>
+            <h2>Ваша Корзина</h2>
+            <div class="cart-items"></div>
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span id="totalPrice">0 ₽</span>
+            </div>
+            <button class="btn clear-cart">Очистить корзину</button>
+            <button class="btn checkout-btn">Оформить Заказ</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно входа -->
+<div class="modal" id="loginModal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Вход в Магазин Ренессанс</h2>
+        <form id="loginForm" class="auth-form">
+            <div class="input-group">
+                <label for="loginEmail">Электронная почта:</label>
+                <input type="email" id="loginEmail" required placeholder="your@email.com">
+            </div>
+            <div class="input-group">
+                <label for="loginPassword">Пароль:</label>
+                <input type="password" id="loginPassword" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-unlock-alt"></i> Войти
+            </button>
+        </form>
+        <p class="auth-switch">Нет аккаунта? <a href="#" onclick="showModal('registerModal')">Создать новый</a></p>
+    </div>
+</div>
+
+<!-- Модальное окно регистрации -->
+<div class="modal" id="registerModal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Стать частью Ренессанса</h2>
+        <form id="registerForm" class="auth-form">
+            <div class="input-group">
+                <label for="regName">Ваше имя:</label>
+                <input type="text" id="regName" required placeholder="Иван Иванов">
+            </div>
+            <div class="input-group">
+                <label for="regEmail">Электронная почта:</label>
+                <input type="email" id="regEmail" required placeholder="your@email.com">
+            </div>
+            <div class="input-group">
+                <label for="regPassword">Пароль:</label>
+                <input type="password" id="regPassword" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-feather-alt"></i> Зарегистрироваться
+            </button>
+        </form>
+        <p class="auth-switch">Уже зарегистрированы? <a href="#" onclick="showModal('loginModal')">Войти</a></p>
+    </div>
+</div>
+ <!-- Новое модальное окно аккаунтов -->
+ <div class="modal" id="accountsModal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('accountsModal')">&times;</span>
+        <h2>Зарегистрированные аккаунты</h2>
+        <div class="accounts-list" id="accountsList">
+            <!-- Аккаунты будут загружены здесь -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn-submit" onclick="closeModal('accountsModal')">
+                <i class="fas fa-times"></i> Закрыть
+            </button>
+        </div>
+    </div>
+</div>        
+    <!-- Кнопка админ-панели (скрыта по умолчанию) -->
+    <a href="admin.html" id="adminLink" style="display:none;">Админ-панель</a>
+
+    <footer class="site-footer">
+        <div class="footer-bottom">
+            <p>© Магазин Ренессанс® 2023 – 2025</p>
+        </div> 
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>ПОКУПАТЕЛЯМ</h4>
+                <ul>
+                    <li><a href="support.html" target="_blank">Поддержка</a></li>
+                    <li><a href="sales-calendar.html" target="_blank">Календарь распродаж</a></li>
+                    <li><a href="store-guide.html" target="_blank">Гид по магазину</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>ПАРТНЁРАМ</h4>
+                <ul>
+                    <li><a href="sell-with-us.html" target="_blank">Продавайте у нас</a></li>
+                    <li><a href="affiliate-program.html" target="_blank">Аффилиатная программа</a></li>
+                    <li><a href="seller-blog.html" target="_blank">Блог для продавца</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>О КОМПАНИИ</h4>
+                <ul>
+                    <li><a href="press-center.html" target="_blank">Пресс-центр</a></li>
+                    <li><a href="company-blog.html" target="_blank">Блог о жизни компании</a></li>
+                    <li><a href="privacy-policy.html" target="_blank">Политика конфиденциальности</a></li>
+                    <li><a href="terms-of-service.html" target="_blank">Пользовательские соглашения</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    
+    <script src="app.js"></script>
+</body>
+</html>

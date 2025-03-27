@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блог для продавцов</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для страницы блога */
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--parchment);
+            color: var(--stone-border);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--blood-red);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .blog-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-post {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--gold-accent);
+        }
+
+        .blog-post:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .blog-post h2 {
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin-bottom: 1rem;
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .blog-post p {
+            font-size: 1rem;
+            color: var(--stone-border);
+        }
+
+        .blog-post .meta {
+            font-size: 0.9rem;
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+        }
+
+        .blog-post .meta span {
+            margin-right: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--blood-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="blog-container">
+        <h1>Блог для продавцов</h1>
+
+        <!-- Пост 1 -->
+        <div class="blog-post">
+            <h2>Как увеличить продажи на платформе</h2>
+            <div class="meta">
+                <span>Автор: Иван Иванов</span>
+                <span>Дата: 10 октября 2023</span>
+            </div>
+            <p>В этой статье мы расскажем о лучших стратегиях для увеличения продаж на нашей платформе. Узнайте, как правильно оформлять товары, использовать ключевые слова и привлекать больше покупателей.</p>
+            <a href="post1.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Пост 2 -->
+        <div class="blog-post">
+            <h2>Секреты успешного описания товаров</h2>
+            <div class="meta">
+                <span>Автор: Мария Петрова</span>
+                <span>Дата: 5 октября 2023</span>
+            </div>
+            <p>Описание товара — это ключ к успешным продажам. В этой статье вы узнаете, как создавать привлекательные и информативные описания, которые помогут вам выделиться среди конкурентов.</p>
+            <a href="post2.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Пост 3 -->
+        <div class="blog-post">
+            <h2>Как работать с отзывами покупателей</h2>
+            <div class="meta">
+                <span>Автор: Алексей Смирнов</span>
+                <span>Дата: 1 октября 2023</span>
+            </div>
+            <p>Отзывы покупателей могут значительно повлиять на ваши продажи. Узнайте, как правильно реагировать на отзывы и использовать их для улучшения вашего сервиса.</p>
+            <a href="post3.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Пост 4 -->
+        <div class="blog-post">
+            <h2>Новые функции платформы для продавцов</h2>
+            <div class="meta">
+                <span>Автор: Елена Кузнецова</span>
+                <span>Дата: 25 сентября 2023</span>
+            </div>
+            <p>Мы постоянно улучшаем нашу платформу. В этой статье вы узнаете о новых функциях, которые помогут вам эффективнее управлять своими товарами и заказами.</p>
+            <a href="post4.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Ссылка для возврата на главную страницу -->
+        <a href="index.html" class="back-link">← Вернуться на главную</a>
+    </div>
+</body>
+</html>

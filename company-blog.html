@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блог о жизни компании</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для страницы блога */
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--parchment);
+            color: var(--stone-border);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--blood-red);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .blog-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-post {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--gold-accent);
+        }
+
+        .blog-post:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .blog-post h2 {
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin-bottom: 1rem;
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .blog-post p {
+            font-size: 1rem;
+            color: var(--stone-border);
+        }
+
+        .blog-post .meta {
+            font-size: 0.9rem;
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+        }
+
+        .blog-post .meta span {
+            margin-right: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--blood-red);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: darken(var(--blood-red), 10%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--blood-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="blog-container">
+        <h1>Блог о жизни компании</h1>
+
+        <!-- Пост 1 -->
+        <div class="blog-post">
+            <h2>Открытие нового офиса в Москве</h2>
+            <div class="meta">
+                <span>Автор: Иван Иванов</span>
+                <span>Дата: 10 октября 2023</span>
+            </div>
+            <p>Мы рады сообщить об открытии нового офиса в Москве. Это важный шаг в развитии нашей компании, который позволит нам лучше обслуживать наших клиентов и партнёров.</p>
+            <a href="post1.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Пост 2 -->
+        <div class="blog-post">
+            <h2>Новые сотрудники в команде</h2>
+            <div class="meta">
+                <span>Автор: Мария Петрова</span>
+                <span>Дата: 5 октября 2023</span>
+            </div>
+            <p>Мы рады приветствовать новых сотрудников в нашей команде. Их опыт и знания помогут нам достичь новых высот и улучшить качество обслуживания.</p>
+            <a href="post2.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Пост 3 -->
+        <div class="blog-post">
+            <h2>Корпоративное мероприятие</h2>
+            <div class="meta">
+                <span>Автор: Алексей Смирнов</span>
+                <span>Дата: 1 октября 2023</span>
+            </div>
+            <p>На прошлой неделе мы провели корпоративное мероприятие, посвящённое подведению итогов года. Это было отличное время для общения и обмена идеями.</p>
+            <a href="post3.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Пост 4 -->
+        <div class="blog-post">
+            <h2>Новые достижения компании</h2>
+            <div class="meta">
+                <span>Автор: Елена Кузнецова</span>
+                <span>Дата: 25 сентября 2023</span>
+            </div>
+            <p>Мы гордимся нашими новыми достижениями, включая рекордные продажи и расширение ассортимента. Спасибо нашим клиентам и партнёрам за поддержку!</p>
+            <a href="post4.html" class="btn btn-primary">Читать далее</a>
+        </div>
+
+        <!-- Ссылка для возврата на главную страницу -->
+        <a href="index.html" class="back-link">← Вернуться на главную</a>
+    </div>
+</body>
+</html>

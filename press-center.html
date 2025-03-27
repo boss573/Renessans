@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пресс-центр</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для страницы пресс-центра */
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--parchment);
+            color: var(--stone-border);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--blood-red);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .press-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .press-section {
+            margin-bottom: 2rem;
+        }
+
+        .press-section h2 {
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin-bottom: 1rem;
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .press-section p {
+            font-size: 1rem;
+            color: var(--stone-border);
+        }
+
+        .press-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .press-section ul li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .press-section ul li::before {
+            content: "•";
+            color: var(--gold-accent);
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -0.3rem;
+        }
+
+        .press-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .press-contact a {
+            color: var(--blood-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .press-contact a:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--blood-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="press-container">
+        <h1>Пресс-центр</h1>
+
+        <!-- Раздел "О нас" -->
+        <div class="press-section">
+            <h2>О нас</h2>
+            <p>Магазин Ренессанс — это уникальная платформа для покупки эксклюзивных товаров премиум-класса. Мы стремимся предоставить нашим клиентам лучший опыт покупок, а партнёрам — выгодные условия сотрудничества.</p>
+        </div>
+
+        <!-- Раздел "Пресс-релизы" -->
+        <div class="press-section">
+            <h2>Пресс-релизы</h2>
+            <ul>
+                <li><a href="press-release1.html" target="_blank">Открытие нового раздела "Электроника" — 15 октября 2025</a></li>
+                <li><a href="press-release2.html" target="_blank">Рекордные продажи в Чёрную пятницу — 1 ноября 2025</a></li>
+                <li><a href="press-release3.html" target="_blank">Запуск новой программы лояльности для клиентов — 25 декабря 2025</a></li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Контакты для СМИ" -->
+        <div class="press-section">
+            <h2>Контакты для СМИ</h2>
+            <div class="press-contact">
+                <p>Для запросов от СМИ и журналистов, пожалуйста, свяжитесь с нашим пресс-секретарём:</p>
+                <p><strong>Имя:</strong>Елена Алексеевна</p>
+                <p><strong>Email:</strong> <a href="mailto:press@renaissance-shop.ru">press@renaissance-shop.ru</a></p>
+                <p><strong>Телефон:</strong> <a href="tel:+78001234567">+7 (800) 123-45-67</a></p>
+            </div>
+        </div>
+
+        <!-- Раздел "Медиа-кит" -->
+        <div class="press-section">
+            <h2>Медиа-кит</h2>
+            <p>Для вашего удобства мы подготовили медиа-кит, который включает логотипы, фотографии и другую полезную информацию. Вы можете скачать его по ссылке ниже:</p>
+            <a href="media-kit.zip" class="btn btn-primary">Скачать медиа-кит</a>
+        </div>
+
+        <!-- Ссылка для возврата на главную страницу -->
+        <a href="index.html" class="back-link">← Вернуться на главную</a>
+    </div>
+</body>
+</html>

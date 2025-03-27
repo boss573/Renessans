@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Продавайте у нас</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для страницы партнёров */
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--parchment);
+            color: var(--stone-border);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--blood-red);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .partner-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .partner-section {
+            margin-bottom: 2rem;
+        }
+
+        .partner-section h2 {
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin-bottom: 1rem;
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .partner-section p {
+            font-size: 1rem;
+            color: var(--stone-border);
+        }
+
+        .partner-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .partner-section ul li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .partner-section ul li::before {
+            content: "•";
+            color: var(--gold-accent);
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -0.3rem;
+        }
+
+        .partner-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            color: var(--stone-border);
+        }
+
+        .input-group input, .input-group textarea {
+            padding: 0.8rem;
+            border: 2px solid var(--gold-accent);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: var(--blood-red);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--blood-red);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: darken(var(--blood-red), 10%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--blood-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="partner-container">
+        <h1>Продавайте у нас</h1>
+
+        <!-- Раздел "Преимущества сотрудничества" -->
+        <div class="partner-section">
+            <h2>Преимущества сотрудничества</h2>
+            <p>Станьте нашим партнёром и получите доступ к широкой аудитории покупателей. Вот что мы предлагаем:</p>
+            <ul>
+                <li>Высокая посещаемость сайта и большой охват аудитории.</li>
+                <li>Удобная платформа для управления товарами и заказами.</li>
+                <li>Поддержка маркетинга и продвижения ваших товаров.</li>
+                <li>Гибкие условия сотрудничества и прозрачная система оплаты.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Условия сотрудничества" -->
+        <div class="partner-section">
+            <h2>Условия сотрудничества</h2>
+            <p>Чтобы начать сотрудничество, выполните следующие шаги:</p>
+            <ul>
+                <li>Заполните заявку на этой странице.</li>
+                <li>Наш менеджер свяжется с вами для уточнения деталей.</li>
+                <li>После согласования условий вы сможете начать продавать свои товары.</li>
+            </ul>
+        </div>
+
+        <!-- Раздел "Форма заявки" -->
+        <div class="partner-section">
+            <h2>Форма заявки</h2>
+            <form class="partner-form">
+                <div class="input-group">
+                    <label for="company-name">Название компании:</label>
+                    <input type="text" id="company-name" name="company-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="contact-name">Контактное лицо:</label>
+                    <input type="text" id="contact-name" name="contact-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Телефон:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="input-group">
+                    <label for="message">Сообщение:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить заявку</button>
+            </form>
+        </div>
+
+        <!-- Ссылка для возврата на главную страницу -->
+        <a href="index.html" class="back-link">← Вернуться на главную</a>
+    </div>
+</body>
+</html>
