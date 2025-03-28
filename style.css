@@ -2386,6 +2386,411 @@ body::before {
   border-color: rgba(197, 164, 126, 0.4);
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.coat-of-arms {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: all 0.3s ease;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+#siteTitle {
+  margin: 0;
+  font-size: 2.2rem;
+  color: var(--blood-red);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  font-family: 'Cinzel Decorative', cursive;
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+
+.logo-subtitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  color: var(--stone-border);
+  letter-spacing: 1.5px;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+/* Анимации при наведении */
+.logo-container:hover {
+  transform: scale(1.02);
+}
+
+.logo-container:hover .coat-of-arms {
+  transform: rotate(-5deg);
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .coat-of-arms {
+    width: 60px;
+    height: 60px;
+  }
+  
+  #siteTitle {
+    font-size: 1.8rem;
+  }
+  
+  .logo-subtitle {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-wrapper {
+    gap: 1rem;
+  }
+  
+  .coat-of-arms {
+    width: 50px;
+    height: 50px;
+  }
+  
+  #siteTitle {
+    font-size: 1.5rem;
+  }
+}
+/* Стили для профиля */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.profile-icon {
+  font-size: 3rem;
+  color: #c5a47e;
+}
+
+.profile-info {
+  background: rgba(245, 240, 230, 0.5);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  border: 1px solid #e0d6c8;
+}
+
+.profile-info p {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.8rem 0;
+  color: #3d2b1f;
+  font-family: 'EB Garamond', serif;
+}
+
+.profile-info i {
+  width: 1.2rem;
+  text-align: center;
+  color: #8b6b3d;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.account-btn {
+  background-color: #5a4a3a;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.account-btn:hover {
+  background-color: #4a3a2a;
+  transform: translateY(-2px);
+}
+
+.account-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+}
+
+.account-btn i {
+  transition: transform 0.3s ease;
+}
+
+.account-btn:hover i {
+  transform: scale(1.1);
+}
+
+/* Иконка уведомлений */
+.account-notification {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  background: #c5a47e;
+  color: #3d2b1f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border: 2px solid #3d2b1f;
+}
+/* Стили для кнопки профиля */
+.profile-btn {
+  background-color: #4a3a2a;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.profile-btn:hover {
+  background-color: #3d2b1f;
+  transform: translateY(-2px);
+}
+
+.profile-btn i {
+  transition: transform 0.3s ease;
+}
+
+.profile-btn:hover i {
+  transform: scale(1.1);
+}
+
+/* Модальное окно профиля */
+#profileModal .modal-content {
+  max-width: 500px;
+  background: linear-gradient(135deg, #f9f5f0 0%, #f0e6d8 100%);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #c5a47e;
+  margin: 0 auto 1rem;
+}
+
+.profile-name {
+  font-family: 'Cinzel', serif;
+  color: #3d2b1f;
+  margin: 0.5rem 0;
+}
+
+.profile-email {
+  color: #6b635b;
+  font-size: 0.95rem;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #e0d6c8;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #8b0000;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #6b635b;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+/* Форма редактирования профиля */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: 'EB Garamond', serif;
+  color: #5a4a3a;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #e0d6c8;
+  border-radius: 6px;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #c5a47e;
+  box-shadow: 0 0 0 2px rgba(197, 164, 126, 0.2);
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.auth-options {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0d6c8;
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  padding: 0.8rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: 'EB Garamond', serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-btn.active {
+  border-bottom-color: #c5a47e;
+  color: #3d2b1f;
+  font-weight: 500;
+}
+
+.wishlist-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.wishlist-item {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e0d6c8;
+  transition: all 0.3s ease;
+}
+
+.wishlist-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.wishlist-item img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.remove-from-wishlist {
+  background: none;
+  border: none;
+  color: #8b0000;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.add-to-wishlist {
+  background: none;
+  border: 1px solid #c5a47e;
+  color: #3d2b1f;
+  margin-top: 0.5rem;
+}
+
+.add-to-wishlist:hover {
+  background: rgba(197, 164, 126, 0.1);
+}
+
+.add-to-wishlist.active {
+  background: #c5a47e;
+  color: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

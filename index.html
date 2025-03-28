@@ -300,6 +300,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    
     <!-- Угловые декорации -->
 <div class="decor-corner decor-corner-tl"></div>
 <div class="decor-corner decor-corner-tr"></div>
@@ -343,12 +344,12 @@
                     <!-- Кнопки авторизации -->
                     <div class="auth-buttons" id="authButtons">
                         <a href="#" class="nav-btn" onclick="showModal('loginModal')">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Войти</span>
+                          <i class="fas fa-sign-in-alt"></i>
+                          <span>Войти</span>
                         </a>
                         <a href="#" class="nav-btn" onclick="showModal('registerModal')">
-                            <i class="fas fa-user-plus"></i>
-                            <span>Регистрация</span>
+                          <i class="fas fa-user-plus"></i>
+                          <span>Регистрация</span>
                         </a>
                     </div>
                 </div>
@@ -357,10 +358,10 @@
         
         <!-- Корзина и аккаунты -->
         <div class="cart-container">
-            <button class="nav-btn accounts-btn" onclick="showModal('accountsModal')">
-                <i class="fas fa-users"></i>
-                <span>Аккаунты</span>
-            </button>
+            <button class="nav-btn profile-btn" id="profileButton">
+                <i class="fas fa-user-circle"></i>
+                <span id="profileButtonText">Профиль</span>
+              </button>
             <a href="#" class="nav-btn cart-indicator" onclick="showModal('cartModal')">
                 <i class="fas fa-shopping-cart"></i>
                 <span>Корзина</span>

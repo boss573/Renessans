@@ -406,29 +406,23 @@ const products = [  {
     description: "4K HDR, Android TV, 55″",
     image: "/img/Смарт-телевизор.png    "
 } ];
-
+let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 // Текущая активная сортировка
 let currentSort = 'default';
-
 // Инициализация сортировки
 function initSorting() {
   document.querySelectorAll('.sort-option').forEach(option => {
     option.addEventListener('click', function() {
       const sortType = this.dataset.sort;
       
-      // Если уже выбрана эта сортировка - ничего не делаем
       if (sortType === currentSort) return;
       
-      // Обновляем визуальное выделение
       document.querySelectorAll('.sort-option').forEach(opt => {
         opt.classList.remove('selected');
       });
       this.classList.add('selected');
       
-      // Сохраняем текущую сортировку
       currentSort = sortType;
-      
-      // Применяем сортировку
       applySort(sortType);
     });
   });
@@ -439,7 +433,6 @@ function applySort(sortType) {
   const productGrid = document.getElementById('productGrid');
   const productCards = Array.from(productGrid.children);
   
-  // Добавляем анимацию перестроения
   productGrid.style.opacity = '0.5';
   productGrid.style.transition = 'opacity 0.2s ease';
   
@@ -468,701 +461,810 @@ function applySort(sortType) {
         );
         break;
       default:
-        // Сортировка по умолчанию (по ID)
         productCards.sort((a, b) => 
           parseInt(a.dataset.id) - parseInt(b.dataset.id)
         );
     }
     
-    // Переставляем элементы в DOM
     productCards.forEach(card => productGrid.appendChild(card));
-    
-    // Возвращаем прозрачность
     productGrid.style.opacity = '1';
   }, 50);
 }
 
-// Инициализируем при загрузке
-document.addEventListener('DOMContentLoaded', initSorting);
-
 // Управление модальными окнами
 function showModal(id) {
-    document.getElementById(id).style.display = 'block';
+  document.getElementById(id).style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
+  document.getElementById(id).style.display = 'none';
+  document.body.style.overflow = 'auto';
 }
 
 window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        event.target.style.display = 'none';
-    }
+  if (event.target.classList.contains('modal')) {
+    closeModal(event.target.id);
+  }
 }
-
-// Обработка формы регистрации
-document.getElementById('registerForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Регистрация успешна! Страница будет перезагружена.');
-    setTimeout(() => location.reload(), 1000);
-});
-
-// Обработка формы входа
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Вход выполнен! Страница будет перезагружена.');
-    setTimeout(() => location.reload(), 1000);
-});
 
 // Корзина
 class Cart {
-    constructor() {
-        this.items = JSON.parse(localStorage.getItem('cart')) || [];
-        this.init();
-    }
+  constructor() {
+    this.items = JSON.parse(localStorage.getItem('cart')) || [];
+    this.init();
+  }
 
-    init() {
-        // Обработка добавления товаров в корзину
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('add-to-cart')) {
-                const productId = parseInt(e.target.dataset.id);
-                const product = products.find(p => p.id === productId);
-                this.addItem(product);
-                this.showNotification(`Товар "${product.name}" добавлен в корзину!`);
-            }
-        });
-
-        // Обработка удаления товаров из корзины
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-from-cart')) {
-                const productId = parseInt(e.target.dataset.id);
-                this.removeItem(productId);
-                this.showNotification(`Товар удален из корзины.`);
-            }
-        });
-
-        // Обработка изменения количества товаров
-        document.addEventListener('change', (e) => {
-            if (e.target.classList.contains('cart-item-quantity')) {
-                const productId = parseInt(e.target.dataset.id);
-                const quantity = parseInt(e.target.value);
-                this.updateQuantity(productId, quantity);
-            }
-        });
-
-        // Обработка очистки корзины
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('clear-cart')) {
-                this.clearCart();
-                this.showNotification(`Корзина очищена.`);
-            }
-        });
-
-        this.updateDisplay();
-    }
-
-    // Добавление товара в корзину
-    addItem(product) {
-        const button = document.querySelector(`.add-to-cart[data-id="${product.id}"]`);
-        if (button) {
-            button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Добавляем...`;
-            button.disabled = true;
-        }
-    
-        setTimeout(() => {
-            const existingItem = this.items.find(item => item.id === product.id);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                this.items.push({ ...product, quantity: 1 });
-            }
-            this.save();
-            this.updateDisplay();
-    
-            if (button) {
-                button.innerHTML = `<i class="fas fa-shopping-cart"></i> В корзину`;
-                button.disabled = false;
-            }
-        }, 1000); // Имитация задержки
-    }
-
-    // Удаление товара из корзины
-    removeItem(productId) {
-        this.items = this.items.filter(item => item.id !== productId);
-        this.save();
-        this.updateDisplay();
-    }
-
-    // Обновление количества товара
-    updateQuantity(productId, quantity) {
-        const item = this.items.find(item => item.id === productId);
-        if (item) {
-            item.quantity = quantity > 0 ? quantity : 1;
-            this.save();
-            this.updateDisplay();
-        }
-    }
-
-    // Очистка корзины
-    clearCart() {
-        this.items = [];
-        this.save();
-        this.updateDisplay();
-    }
-
-    // Сохранение корзины в localStorage
-    save() {
-        try {
-            localStorage.setItem('cart', JSON.stringify(this.items));
-            this.updateCounter();
-        } catch (error) {
-            console.error('Ошибка при сохранении в localStorage:', error);
-        }
-    }
-
-    // Обновление счетчика товаров в корзине
-    updateCounter() {
-        const totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
-        document.querySelector('.cart-counter').textContent = totalItems;
-    }
-
-    // Отображение корзины
-    updateDisplay() {
-        const cartItems = document.querySelector('.cart-items');
-        const total = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-        cartItems.innerHTML = this.items.map(item => `
-            <div class="cart-item">
-                <img src="${item.image}" alt="${item.name}">
-                <div class="cart-item-info">
-                    <h4>${item.name}</h4>
-                    <p>${item.price.toLocaleString()} ₽</p>
-                </div>
-                <div class="cart-item-controls">
-                    <input type="number" class="cart-item-quantity" data-id="${item.id}" 
-                           value="${item.quantity}" min="1">
-                    <button class="btn btn-sm remove-from-cart" data-id="${item.id}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `).join('');
-
-        document.getElementById('totalPrice').textContent = `${total.toLocaleString()} ₽`;
-    }
-
-    // Показ уведомлений
-    showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
-}
-
-
-// Фильтрация товаров
-class ProductFilter {
-    constructor() {
-        this.categoryFilters = ['all'];
-        this.minPrice = 0;
-        this.maxPrice = 100000;
-        this.init();
-    }
-
-    init() {
-        // Обработчик для категорий
-        document.querySelectorAll('[name="category"]').forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                this.updateCategoryFilters(checkbox);
-                this.filterProducts();
-            });
-        });
-
-        // Инициализация ценового фильтра
-        this.initPriceFilter();
-    }
-
-    initPriceFilter() {
-        const minPriceInput = document.getElementById('minPrice');
-        const maxPriceInput = document.getElementById('maxPrice');
-        const currentMinPrice = document.getElementById('currentMinPrice');
-        const currentMaxPrice = document.getElementById('currentMaxPrice');
-
-        // Форматирование цены
-        const formatPrice = (price) => {
-            return parseInt(price).toLocaleString('ru-RU');
-        };
-
-        // Обновление отображаемых значений
-        const updateDisplay = () => {
-            currentMinPrice.textContent = `От ${formatPrice(minPriceInput.value)} ₽`;
-            currentMaxPrice.textContent = `До ${formatPrice(maxPriceInput.value)} ₽`;
-            
-            this.minPrice = parseInt(minPriceInput.value) || 0;
-            this.maxPrice = parseInt(maxPriceInput.value) || 100000;
-            
-            this.filterProducts();
-        };
-
-        // Обработчики для полей ввода с дебаунсом
-        minPriceInput.addEventListener('input', this.debounce(() => {
-            let value = parseInt(minPriceInput.value) || 0;
-            if (value > this.maxPrice) value = this.maxPrice;
-            if (value < 0) value = 0;
-            minPriceInput.value = value;
-            updateDisplay();
-        }, 300));
-
-        maxPriceInput.addEventListener('input', this.debounce(() => {
-            let value = parseInt(maxPriceInput.value) || 100000;
-            if (value < this.minPrice) value = this.minPrice;
-            if (value > 100000) value = 100000;
-            maxPriceInput.value = value;
-            updateDisplay();
-        }, 300));
-
-        // Инициализация значений
-        minPriceInput.value = this.minPrice;
-        maxPriceInput.value = this.maxPrice;
-        updateDisplay();
-    }
-
-    // Остальные методы класса остаются без изменений
-    // ...
-
-
-    // Форматирование цены (100000 -> 100 000)
-    formatPrice(price) {
-        return parseInt(price).toLocaleString('ru-RU');
-    }
-
-    // Обновленная функция фильтрации товаров
-    filterProducts() {
-        const filtered = products.filter(product => {
-            const categoryMatch = this.categoryFilters.includes('all') || 
-                this.categoryFilters.includes(product.category);
-            const priceMatch = product.price >= this.minPrice && 
-                              product.price <= this.maxPrice;
-            return categoryMatch && priceMatch;
-        });
-
-        this.renderProducts(filtered);
-    }
-
-    // Остальные методы класса остаются без изменений
-    updateCategoryFilters(checkbox) {
-        const value = checkbox.value;
-
-        if (value === 'all') {
-            this.categoryFilters = ['all'];
-            document.querySelectorAll('[name="category"]').forEach(cb => {
-                if (cb.value !== 'all') cb.checked = false;
-            });
-        } else {
-            this.categoryFilters = this.categoryFilters.filter(cat => cat !== 'all');
-
-            if (checkbox.checked) {
-                this.categoryFilters.push(value);
-            } else {
-                this.categoryFilters = this.categoryFilters.filter(cat => cat !== value);
-            }
-
-            if (this.categoryFilters.length === 0) {
-                this.categoryFilters = ['all'];
-                document.querySelector('[name="category"][value="all"]').checked = true;
-            }
-        }
-    }
-
-    renderProducts(products) {
-        const productGrid = document.getElementById('productGrid');
-        productGrid.innerHTML = products.map(product => `
-            <article class="product-card" data-id="${product.id}">
-                <div class="product-image">
-                    <img src="${product.image}" alt="${product.name}" loading="lazy">
-                </div>
-                <div class="product-details">
-                    <h3>${product.name}</h3>
-                    <div class="product-meta">
-                        <span class="product-price">${product.price.toLocaleString()} ₽</span>
-                        <span class="product-category">${product.category}</span>
-                    </div>
-                    <p class="product-description">${product.description}</p>
-                    <button class="btn add-to-cart" data-id="${product.id}">
-                        <i class="fas fa-shopping-cart"></i> В корзину
-                    </button>
-                </div>
-            </article>
-        `).join('');
-    }
-
-    debounce(fn, delay) {
-        let timeout;
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => fn.apply(this, args), delay);
-        };
-    }
-}
-
-// Инициализация корзины
-const cart = new Cart();
-
-// Инициализация фильтров
-new ProductFilter();
-
-// Обработчик для обновления страницы при нажатии на заголовок
-document.getElementById('siteTitle').addEventListener('click', function() {
-    location.reload();
-});
-
-// Данные пользователей (хранятся в localStorage)
-let users = JSON.parse(localStorage.getItem('users')) || [];
-let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-    initAuthSystem();
-});
-
-// Основная функция инициализации системы аутентификации
-function initAuthSystem() {
-    // Добавляем тестового пользователя если нет пользователей
-    if (users.length === 0) {
-        users.push({
-            id: 1,
-            name: "Тестовый Пользователь",
-            email: "test@example.com",
-            password: "test123",
-            registerDate: new Date().toISOString()
-        });
-        localStorage.setItem('users', JSON.stringify(users));
-    }
-
-    checkAuthState();
-    initAuthForms();
-    initModalCloseHandlers();
-}
-
-// Проверка состояния авторизации и обновление UI
-function checkAuthState() {
-    if (currentUser) {
-        updateUIForLoggedInUser();
-    } else {
-        updateUIForLoggedOutUser();
-    }
-}
-
-// Обновление интерфейса для авторизованного пользователя
-function updateUIForLoggedInUser() {
-    // Скрываем кнопки входа/регистрации
-    document.querySelectorAll('[data-auth]').forEach(el => {
-        el.style.display = 'none';
-    });
-    
-    // Показываем панель пользователя
-    const userPanel = document.getElementById('userPanel');
-    if (userPanel) {
-        userPanel.style.display = 'flex';
-        const usernameElement = document.getElementById('username');
-        if (usernameElement) {
-            usernameElement.textContent = currentUser.name;
-        }
-    }
-}
-
-// Обновление интерфейса для неавторизованного пользователя
-function updateUIForLoggedOutUser() {
-    // Показываем кнопки входа/регистрации
-    document.querySelectorAll('[data-auth]').forEach(el => {
-        el.style.display = 'flex';
-    });
-    
-    // Скрываем панель пользователя
-    const userPanel = document.getElementById('userPanel');
-    if (userPanel) {
-        userPanel.style.display = 'none';
-    }
-}
-
-// Инициализация форм авторизации
-function initAuthForms() {
-    // Форма входа
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-            loginUser(email, password);
-        });
-    }
-
-    // Форма регистрации
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
-            registerUser(name, email, password);
-        });
-    }
-}
-
-// Инициализация обработчиков закрытия модальных окон
-function initModalCloseHandlers() {
-    window.addEventListener('click', function(event) {
-        if (event.target.classList.contains('modal')) {
-            closeModal(event.target.id);
-        }
+  init() {
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('add-to-cart')) {
+        const productId = parseInt(e.target.dataset.id);
+        const product = products.find(p => p.id === productId);
+        this.addItem(product);
+        this.showNotification(`Товар "${product.name}" добавлен в корзину!`);
+      }
+      
+      if (e.target.classList.contains('remove-from-cart')) {
+        const productId = parseInt(e.target.dataset.id);
+        this.removeItem(productId);
+        this.showNotification(`Товар удален из корзины.`);
+      }
     });
 
-    document.querySelectorAll('.modal .close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', function() {
-            const modal = this.closest('.modal');
-            if (modal) {
-                closeModal(modal.id);
-            }
-        });
+    document.addEventListener('change', (e) => {
+      if (e.target.classList.contains('cart-item-quantity')) {
+        const productId = parseInt(e.target.dataset.id);
+        const quantity = parseInt(e.target.value);
+        this.updateQuantity(productId, quantity);
+      }
     });
-}
 
-// Функция входа
-function loginUser(email, password) {
-    if (!email || !password) {
-        showNotification('Пожалуйста, заполните все поля', 'error');
-        return;
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('clear-cart')) {
+        this.clearCart();
+        this.showNotification(`Корзина очищена.`);
+      }
+    });
+
+    this.updateDisplay();
+  }
+
+  addItem(product) {
+    const button = document.querySelector(`.add-to-cart[data-id="${product.id}"]`);
+    if (button) {
+      button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Добавляем...`;
+      button.disabled = true;
     }
+  
+    setTimeout(() => {
+      const existingItem = this.items.find(item => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        this.items.push({ ...product, quantity: 1 });
+      }
+      this.save();
+      this.updateDisplay();
 
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-        currentUser = user;
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        
-        closeModal('loginModal');
-        updateUIForLoggedInUser();
-        showNotification(`Добро пожаловать, ${user.name}!`);
-        
-        // Очищаем форму входа
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) loginForm.reset();
-    } else {
-        showNotification('Неверный email или пароль', 'error');
+      if (button) {
+        button.innerHTML = `<i class="fas fa-shopping-cart"></i> В корзину`;
+        button.disabled = false;
+      }
+    }, 1000);
+  }
+
+  removeItem(productId) {
+    this.items = this.items.filter(item => item.id !== productId);
+    this.save();
+    this.updateDisplay();
+  }
+
+  updateQuantity(productId, quantity) {
+    const item = this.items.find(item => item.id === productId);
+    if (item) {
+      item.quantity = quantity > 0 ? quantity : 1;
+      this.save();
+      this.updateDisplay();
     }
-}
+  }
 
-// Функция регистрации
-function registerUser(name, email, password) {
-    // Валидация
-    if (!name || !email || !password) {
-        showNotification('Все поля обязательны для заполнения', 'error');
-        return;
+  clearCart() {
+    this.items = [];
+    this.save();
+    this.updateDisplay();
+  }
+
+  save() {
+    try {
+      localStorage.setItem('cart', JSON.stringify(this.items));
+      this.updateCounter();
+    } catch (error) {
+      console.error('Ошибка при сохранении в localStorage:', error);
     }
+  }
 
-    if (users.some(u => u.email === email)) {
-        showNotification('Пользователь с таким email уже существует', 'error');
-        return;
-    }
+  updateCounter() {
+    const totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
+    document.querySelector('.cart-counter').textContent = totalItems;
+  }
 
-    if (password.length < 6) {
-        showNotification('Пароль должен содержать минимум 6 символов', 'error');
-        return;
-    }
+  updateDisplay() {
+    const cartItems = document.querySelector('.cart-items');
+    const total = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    const newUser = {
-        id: Date.now(),
-        name,
-        email,
-        password,
-        registerDate: new Date().toISOString()
-    };
-
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    // Автоматический вход после регистрации
-    currentUser = newUser;
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    
-    closeModal('registerModal');
-    updateUIForLoggedInUser();
-    showNotification(`Регистрация прошла успешно! Добро пожаловать, ${name}!`);
-    
-    // Очищаем форму регистрации
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) registerForm.reset();
-}
-
-
-// Обновленная функция выхода
-function logout() {
-    currentUser = null;
-    localStorage.removeItem('currentUser');
-    updateAuthUI();
-    showNotification('Вы успешно вышли из аккаунта');
-}
-
-// Функция управления интерфейсом
-function updateAuthUI() {
-    const userPanel = document.getElementById('userPanel');
-    const authButtons = document.getElementById('authButtons');
-    
-    if (currentUser) {
-        userPanel.style.display = 'flex';
-        authButtons.style.display = 'none';
-        document.getElementById('username').textContent = currentUser.name;
-    } else {
-        userPanel.style.display = 'none';
-        authButtons.style.display = 'flex';
-    }
-}
-
-// Показ списка аккаунтов
-function showAccountsModal() {
-    const accounts = JSON.parse(localStorage.getItem('users')) || [];
-    const accountsList = document.getElementById('accountsList');
-    
-    accountsList.innerHTML = accounts.map(account => `
-        <div class="account-item" data-id="${account.id}">
-            <div class="account-info">
-                <div class="account-name">${account.name}</div>
-                <div class="account-email">${account.email}</div>
-                <small>Зарегистрирован: ${new Date(account.registerDate).toLocaleDateString()}</small>
-            </div>
-            <div class="account-actions">
-                <button class="account-btn login-btn" onclick="loginAsUser(${account.id})">
-                    <i class="fas fa-sign-in-alt"></i> Войти
-                </button>
-                <button class="account-btn delete-btn" onclick="deleteAccount(${account.id})">
-                    <i class="fas fa-trash"></i> Удалить
-                </button>
-            </div>
+    cartItems.innerHTML = this.items.map(item => `
+      <div class="cart-item">
+        <img src="${item.image}" alt="${item.name}">
+        <div class="cart-item-info">
+          <h4>${item.name}</h4>
+          <p>${item.price.toLocaleString()} ₽</p>
         </div>
+        <div class="cart-item-controls">
+          <input type="number" class="cart-item-quantity" data-id="${item.id}" 
+                value="${item.quantity}" min="1">
+          <button class="btn btn-sm remove-from-cart" data-id="${item.id}">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
     `).join('');
-    
-    showModal('accountsModal');
-}
 
-// Вход под выбранным пользователем
-function loginAsUser(userId) {
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(u => u.id === userId);
-    
-    if (user) {
-        currentUser = user;
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        updateAuthUI();
-        closeModal('accountsModal');
-        showNotification(`Вы вошли как ${user.name}`);
-    }
-}
+    document.getElementById('totalPrice').textContent = `${total.toLocaleString()} ₽`;
+  }
 
-// Удаление аккаунта
-function deleteAccount(userId) {
-    if (confirm('Вы уверены, что хотите удалить этот аккаунт?')) {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        users = users.filter(u => u.id !== userId);
-        localStorage.setItem('users', JSON.stringify(users));
-        
-        // Если удаляем текущего пользователя - разлогиниваем
-        if (currentUser && currentUser.id === userId) {
-            logout();
-        }
-        
-        showAccountsModal(); // Обновляем список
-        showNotification('Аккаунт удален');
-    }
-}
-
-// Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-    // Проверяем состояние авторизации
-    currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-    
-    // Инициализация тестовых данных
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-    if (users.length === 0) {
-        users = [
-            {
-                id: 1,
-                name: "Администратор",
-                email: "admin@renaissance.com",
-                password: "admin123",
-                registerDate: new Date().toISOString()
-            },
-            {
-                id: 2,
-                name: "Тестовый Пользователь",
-                email: "test@example.com",
-                password: "test123",
-                registerDate: new Date().toISOString()
-            }
-        ];
-        localStorage.setItem('users', JSON.stringify(users));
-    }
-    
-    updateAuthUI();
-});
-
-// Управление модальными окнами
-function showModal(id) {
-    document.getElementById(id).style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        closeModal(event.target.id);
-    }
-}
-
-// Показ уведомлений
-function showNotification(message, type = 'success') {
+  showNotification(message) {
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
+    notification.className = 'notification';
     notification.textContent = message;
     document.body.appendChild(notification);
 
     setTimeout(() => {
-        notification.remove();
+      notification.remove();
     }, 3000);
+  }
 }
-// Инициализация (добавьте в конец файла)
-document.getElementById('sortSelect')?.addEventListener('change', filterProducts);
-document.querySelectorAll('[name="category"]').forEach(checkbox => {
-    checkbox.addEventListener('change', filterProducts);
+
+// Фильтрация товаров
+class ProductFilter {
+  constructor() {
+    this.categoryFilters = ['all'];
+    this.minPrice = 0;
+    this.maxPrice = 100000;
+    this.init();
+  }
+
+  init() {
+    document.querySelectorAll('[name="category"]').forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        this.updateCategoryFilters(checkbox);
+        this.filterProducts();
+      });
+    });
+
+    this.initPriceFilter();
+  }
+
+  initPriceFilter() {
+    const minPriceInput = document.getElementById('minPrice');
+    const maxPriceInput = document.getElementById('maxPrice');
+    const currentMinPrice = document.getElementById('currentMinPrice');
+    const currentMaxPrice = document.getElementById('currentMaxPrice');
+
+    const updateDisplay = () => {
+      currentMinPrice.textContent = `От ${this.formatPrice(minPriceInput.value)} ₽`;
+      currentMaxPrice.textContent = `До ${this.formatPrice(maxPriceInput.value)} ₽`;
+      
+      this.minPrice = parseInt(minPriceInput.value) || 0;
+      this.maxPrice = parseInt(maxPriceInput.value) || 100000;
+      
+      this.filterProducts();
+    };
+
+    minPriceInput.addEventListener('input', this.debounce(() => {
+      let value = parseInt(minPriceInput.value) || 0;
+      if (value > this.maxPrice) value = this.maxPrice;
+      if (value < 0) value = 0;
+      minPriceInput.value = value;
+      updateDisplay();
+    }, 300));
+
+    maxPriceInput.addEventListener('input', this.debounce(() => {
+      let value = parseInt(maxPriceInput.value) || 100000;
+      if (value < this.minPrice) value = this.minPrice;
+      if (value > 100000) value = 100000;
+      maxPriceInput.value = value;
+      updateDisplay();
+    }, 300));
+
+    minPriceInput.value = this.minPrice;
+    maxPriceInput.value = this.maxPrice;
+    updateDisplay();
+  }
+
+  formatPrice(price) {
+    return parseInt(price).toLocaleString('ru-RU');
+  }
+
+  filterProducts() {
+    const filtered = products.filter(product => {
+      const categoryMatch = this.categoryFilters.includes('all') || 
+        this.categoryFilters.includes(product.category);
+      const priceMatch = product.price >= this.minPrice && 
+                        product.price <= this.maxPrice;
+      return categoryMatch && priceMatch;
+    });
+
+    this.renderProducts(filtered);
+  }
+
+  updateCategoryFilters(checkbox) {
+    const value = checkbox.value;
+
+    if (value === 'all') {
+      this.categoryFilters = ['all'];
+      document.querySelectorAll('[name="category"]').forEach(cb => {
+        if (cb.value !== 'all') cb.checked = false;
+      });
+    } else {
+      this.categoryFilters = this.categoryFilters.filter(cat => cat !== 'all');
+
+      if (checkbox.checked) {
+        this.categoryFilters.push(value);
+      } else {
+        this.categoryFilters = this.categoryFilters.filter(cat => cat !== value);
+      }
+
+      if (this.categoryFilters.length === 0) {
+        this.categoryFilters = ['all'];
+        document.querySelector('[name="category"][value="all"]').checked = true;
+      }
+    }
+  }
+
+  renderProducts(products) {
+    const productGrid = document.getElementById('productGrid');
+    productGrid.innerHTML = products.map(product => `
+      <article class="product-card" data-id="${product.id}">
+        <div class="product-image">
+          <img src="${product.image}" alt="${product.name}" loading="lazy">
+        </div>
+        <div class="product-details">
+          <h3>${product.name}</h3>
+          <div class="product-meta">
+            <span class="product-price">${product.price.toLocaleString()} ₽</span>
+            <span class="product-category">${product.category}</span>
+          </div>
+          <p class="product-description">${product.description}</p>
+          <button class="btn add-to-cart" data-id="${product.id}">
+            <i class="fas fa-shopping-cart"></i> В корзину
+          </button>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+}
+
+// Данные пользователей
+let users = JSON.parse(localStorage.getItem('users')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+// Инициализация системы аутентификации
+function initAuthSystem() {
+  if (users.length === 0) {
+    users.push({
+      id: 1,
+      name: "Тестовый Пользователь",
+      email: "test@example.com",
+      password: "test123",
+      registerDate: new Date().toISOString(),
+      stats: {
+        orders: 0,
+        wishlist: 0
+      }
+    });
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  updateAuthUI();
+  initAuthForms();
+}
+
+// Обработка формы входа
+document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  loginUser(email, password);
 });
-document.getElementById('priceInput')?.addEventListener('input', filterProducts);
 
-// Первоначальная загрузка товаров
-filterProducts();
-        
- // Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация корзины
+// Обработка формы регистрации
+document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  registerUser(name, email, password);
+});
+
+// Функция входа
+function loginUser(email, password) {
+  if (!email || !password) {
+    showNotification('Пожалуйста, заполните все поля', 'error');
+    return;
+  }
+
+  const user = users.find(u => u.email === email && u.password === password);
+  
+  if (user) {
+    currentUser = user;
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    closeModal('loginModal');
+    updateAuthUI();
+    showNotification(`Добро пожаловать, ${user.name}!`);
+    document.getElementById('loginForm').reset();
+  } else {
+    showNotification('Неверный email или пароль', 'error');
+  }
+}
+
+// Функция регистрации
+function registerUser(name, email, password) {
+  if (!name || !email || !password) {
+    showNotification('Все поля обязательны для заполнения', 'error');
+    return;
+  }
+
+  if (users.some(u => u.email === email)) {
+    showNotification('Пользователь с таким email уже существует', 'error');
+    return;
+  }
+
+  const newUser = {
+    id: Date.now(),
+    name,
+    email,
+    password,
+    registerDate: new Date().toISOString(),
+    lastLogin: new Date().toISOString(),
+    stats: {
+      orders: 0,
+      wishlist: 0
+    }
+  };
+
+  users.push(newUser);
+  localStorage.setItem('users', JSON.stringify(users));
+  
+  currentUser = newUser;
+  localStorage.setItem('currentUser', JSON.stringify(newUser));
+  updateAuthUI();
+  closeModal('registerModal');
+  
+  showNotification(`Добро пожаловать, ${name}! Ваш профиль успешно создан.`);
+  setTimeout(() => showProfileModal(), 500);
+}
+
+// Функция выхода
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('currentUser');
+  updateAuthUI();
+  closeModal('profileModal');
+  showNotification('Вы успешно вышли из аккаунта');
+}
+
+// Показ профиля
+function showProfileModal() {
+  if (!currentUser) return;
+
+  updateUserStats();
+
+  const profileModal = document.createElement('div');
+  profileModal.id = 'profileModal';
+  profileModal.className = 'modal';
+  profileModal.innerHTML = `
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('profileModal')">&times;</span>
+      <h2>Ваш профиль</h2>
+      <div class="profile-header">
+        <img src="${currentUser.avatar || '/img/default-avatar.jpg'}" class="profile-avatar">
+        <h3>${currentUser.name}</h3>
+        <p class="profile-email">${currentUser.email}</p>
+      </div>
+      <div class="profile-stats">
+        <div class="stat-card">
+          <div class="stat-value">${currentUser.stats?.orders || 0}</div>
+          <div class="stat-label">Заказов</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${currentUser.stats?.wishlist || 0}</div>
+          <div class="stat-label">Избранное</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${new Date(currentUser.registerDate).toLocaleDateString()}</div>
+          <div class="stat-label">Дата регистрации</div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Выйти
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(profileModal);
+  showModal('profileModal');
+}
+
+// Обновление статистики пользователя
+function updateUserStats() {
+  if (!currentUser) return;
+  
+  const orders = JSON.parse(localStorage.getItem('orders')) || [];
+  const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+  
+  currentUser.stats = {
+    orders: orders.filter(o => o.userId === currentUser.id).length,
+    wishlist: wishlist.filter(i => i.userId === currentUser.id).length
+  };
+  
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  
+  const userIndex = users.findIndex(u => u.id === currentUser.id);
+  if (userIndex !== -1) {
+    users[userIndex] = currentUser;
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+}
+
+// Обработчик кнопки профиля
+function handleProfileButtonClick() {
+  if (currentUser) {
+    showProfileModal();
+  } else {
+    showAuthChoiceModal();
+  }
+}
+
+// Модальное окно выбора действия
+function showAuthChoiceModal() {
+  const modal = document.createElement('div');
+  modal.id = 'authChoiceModal';
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('authChoiceModal')">&times;</span>
+      <h2>Доступ к профилю</h2>
+      <p>Чтобы получить доступ ко всем возможностям профиля, пожалуйста, войдите или зарегистрируйтесь.</p>
+      <div class="auth-options">
+        <button class="btn" onclick="showModal('loginModal'); closeModal('authChoiceModal')">
+          <i class="fas fa-sign-in-alt"></i> Войти
+        </button>
+        <button class="btn" onclick="showModal('registerModal'); closeModal('authChoiceModal')">
+          <i class="fas fa-user-plus"></i> Регистрация
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  showModal('authChoiceModal');
+}
+
+// Обновленная функция updateAuthUI
+function updateAuthUI() {
+    const profileButton = document.getElementById('profileButton');
+    const profileButtonText = document.getElementById('profileButtonText');
+    const authButtons = document.getElementById('authButtons');
+    
+    if (currentUser) {
+      // Для авторизованных пользователей
+      profileButtonText.textContent = currentUser.name.split(' ')[0]; // Короткое имя
+      profileButton.style.display = 'flex';
+      authButtons.style.display = 'none'; // Скрываем кнопки входа/регистрации
+    } else {
+      // Для неавторизованных пользователей
+      profileButtonText.textContent = 'Профиль';
+      profileButton.style.display = 'flex';
+      authButtons.style.display = 'flex'; // Показываем кнопки входа/регистрации
+    }
+  }
+// Обновленная функция handleProfileButtonClick
+function handleProfileButtonClick() {
+    if (currentUser) {
+      showProfileModal();
+    } else {
+      // Показываем модальное окно с выбором действия
+      showAuthChoiceModal();
+    }
+  }
+// Показ уведомлений
+function showNotification(message, type = 'success') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+// Модальное окно выбора действия (добавьте в CSS соответствующие стили)
+function showAuthChoiceModal() {
+    const modal = document.createElement('div');
+    modal.id = 'authChoiceModal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('authChoiceModal')">&times;</span>
+        <h2>Доступ к профилю</h2>
+        <p>Для просмотра профиля требуется авторизация</p>
+        <div class="auth-options">
+          <button class="btn" onclick="showModal('loginModal'); closeModal('authChoiceModal')">
+            <i class="fas fa-sign-in-alt"></i> Войти
+          </button>
+          <button class="btn" onclick="showModal('registerModal'); closeModal('authChoiceModal')">
+            <i class="fas fa-user-plus"></i> Зарегистрироваться
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    showModal('authChoiceModal');
+  }
+  
+  // Инициализация при загрузке страницы
+  document.addEventListener('DOMContentLoaded', function() {
+    // Проверяем авторизацию
+    currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+    users = JSON.parse(localStorage.getItem('users')) || [];
+    
+    // Назначаем обработчик кнопке профиля
+    document.getElementById('profileButton').addEventListener('click', handleProfileButtonClick);
+    
+    // Инициализация других компонентов
     const cart = new Cart();
-    
-    // Инициализация фильтров
     new ProductFilter();
+    initSorting();
     
-    // Инициализация системы аутентификации
-    initAuthSystem();
-});  
+    // Обновляем интерфейс
+    updateAuthUI();
+  });
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+  // Инициализация корзины
+  const cart = new Cart();
+  
+  // Инициализация фильтров
+  new ProductFilter();
+  
+  // Инициализация системы аутентификации
+  initAuthSystem();
+  
+  // Инициализация сортировки
+  initSorting();
+  
+  // Обработчик кнопки профиля
+  document.getElementById('profileButton').addEventListener('click', handleProfileButtonClick);
+  
+  // Обработчик для обновления страницы
+  document.getElementById('siteTitle').addEventListener('click', function() {
+    location.reload();
+  });
+});
+  
+// Функционал добавления в избранное
+function initWishlist() {
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('add-to-wishlist')) {
+      const productId = parseInt(e.target.dataset.id);
+      const product = products.find(p => p.id === productId);
+      toggleWishlistItem(product);
+    }
+    
+    if (e.target.classList.contains('remove-from-wishlist')) {
+      const productId = parseInt(e.target.dataset.id);
+      removeFromWishlist(productId);
+    }
+  });
+}
 
+function toggleWishlistItem(product) {
+  const existingIndex = wishlist.findIndex(item => item.id === product.id);
+  
+  if (existingIndex >= 0) {
+    wishlist.splice(existingIndex, 1);
+    showNotification(`Товар "${product.name}" удален из избранного`);
+  } else {
+    wishlist.push(product);
+    showNotification(`Товар "${product.name}" добавлен в избранное`);
+  }
+  
+  saveWishlist();
+  updateWishlistCounter();
+}
 
+function removeFromWishlist(productId) {
+  wishlist = wishlist.filter(item => item.id !== productId);
+  saveWishlist();
+  updateWishlistCounter();
+  renderWishlistItems();
+  showNotification('Товар удален из избранного');
+}
+
+function saveWishlist() {
+  localStorage.setItem('wishlist', JSON.stringify(wishlist));
+}
+
+function updateWishlistCounter() {
+  const counter = document.getElementById('wishlist-count');
+  if (counter) {
+    counter.textContent = wishlist.length;
+  }
+}
+
+function renderWishlistItems() {
+  const container = document.getElementById('wishlistItems');
+  if (!container) return;
+  
+  container.innerHTML = wishlist.map(item => `
+    <div class="wishlist-item">
+      <img src="${item.image}" alt="${item.name}">
+      <h4>${item.name}</h4>
+      <p>${item.price.toLocaleString()} ₽</p>
+      <div class="wishlist-actions">
+        <button class="btn add-to-cart" data-id="${item.id}">
+          <i class="fas fa-shopping-cart"></i> В корзину
+        </button>
+        <button class="remove-from-wishlist" data-id="${item.id}">
+          <i class="fas fa-trash"></i> Удалить
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Обновите функцию showProfileModal
+function showProfileModal() {
+  if (!currentUser) return;
+
+  const profileModal = document.createElement('div');
+  profileModal.id = 'profileModal';
+  profileModal.className = 'modal';
+  profileModal.innerHTML = `
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('profileModal')">&times;</span>
+      <h2>Ваш профиль</h2>
+      
+      <div class="profile-tabs">
+        <button class="tab-btn active" data-tab="profile-info">Профиль</button>
+        <button class="tab-btn" data-tab="wishlist">Избранное (<span id="wishlist-count">${wishlist.length}</span>)</button>
+      </div>
+      
+      <div class="tab-content" id="profile-info">
+        <div class="profile-header">
+          <img src="${currentUser.avatar || '/img/default-avatar.jpg'}" class="profile-avatar">
+          <h3>${currentUser.name}</h3>
+          <p class="profile-email">${currentUser.email}</p>
+        </div>
+        <div class="profile-stats">
+          <div class="stat-card">
+            <div class="stat-value">${currentUser.stats?.orders || 0}</div>
+            <div class="stat-label">Заказов</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${wishlist.length}</div>
+            <div class="stat-label">Избранное</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${new Date(currentUser.registerDate).toLocaleDateString()}</div>
+            <div class="stat-label">Дата регистрации</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="wishlist" style="display:none;">
+        ${wishlist.length > 0 ? `
+          <div class="wishlist-items" id="wishlistItems">
+            ${wishlist.map(item => `
+              <div class="wishlist-item">
+                <img src="${item.image}" alt="${item.name}">
+                <h4>${item.name}</h4>
+                <p>${item.price.toLocaleString()} ₽</p>
+                <div class="wishlist-actions">
+                  <button class="btn add-to-cart" data-id="${item.id}">
+                    <i class="fas fa-shopping-cart"></i> В корзину
+                  </button>
+                  <button class="remove-from-wishlist" data-id="${item.id}">
+                    <i class="fas fa-trash"></i> Удалить
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : `
+          <div class="empty-wishlist">
+            <i class="fas fa-heart" style="font-size: 2rem; color: #e0d6c8;"></i>
+            <p>Ваш список избранного пуст</p>
+          </div>
+        `}
+      </div>
+      
+      <div class="profile-actions">
+        <button class="btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Выйти
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(profileModal);
+  showModal('profileModal');
+  
+  // Инициализация табов
+  initProfileTabs();
+  // Инициализация обработчиков для избранного
+  initWishlistHandlers();
+}
+
+function initProfileTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Удаляем active у всех кнопок
+      tabBtns.forEach(b => b.classList.remove('active'));
+      // Скрываем все табы
+      tabContents.forEach(content => content.style.display = 'none');
+      
+      // Активируем текущую кнопку
+      btn.classList.add('active');
+      // Показываем текущий таб
+      const tabId = btn.dataset.tab;
+      document.getElementById(tabId).style.display = 'block';
+    });
+  });
+}
+
+function initWishlistHandlers() {
+  document.querySelectorAll('.remove-from-wishlist').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const productId = parseInt(this.dataset.id);
+      removeFromWishlist(productId);
+    });
+  });
+  
+  document.querySelectorAll('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const productId = parseInt(this.dataset.id);
+      const product = products.find(p => p.id === productId);
+      cart.addItem(product);
+    });
+  });
+}
+
+// Обновите кнопки товаров (добавьте в renderProducts):
+`<button class="btn add-to-wishlist" data-id="${product.id}">
+  <i class="fas fa-heart"></i> В избранное
+</button>`
+
+// Добавьте в инициализацию при загрузке:
+document.addEventListener('DOMContentLoaded', function() {
+  // ... остальная инициализация ...
+  initWishlist();
+  updateWishlistCounter();
+});
 
 
 
