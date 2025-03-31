@@ -1266,7 +1266,231 @@ document.addEventListener('DOMContentLoaded', function() {
   updateWishlistCounter();
 });
 
+// Инициализация избранного
+function initWishlist() {
+  // Обработчик кнопки "В избранное"
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('add-to-wishlist') || 
+        e.target.closest('.add-to-wishlist')) {
+      const button = e.target.classList.contains('add-to-wishlist') ? 
+        e.target : e.target.closest('.add-to-wishlist');
+      const productId = parseInt(button.dataset.id);
+      toggleWishlistItem(productId);
+    }
+    
+    // Обработчик удаления из избранного
+    if (e.target.classList.contains('remove-from-wishlist') || 
+        e.target.closest('.remove-from-wishlist')) {
+      const button = e.target.classList.contains('remove-from-wishlist') ? 
+        e.target : e.target.closest('.remove-from-wishlist');
+      const productId = parseInt(button.dataset.id);
+      removeFromWishlist(productId);
+    }
+  });
+}
 
+// Переключение товара в избранном
+function toggleWishlistItem(productId) {
+  if (!currentUser) {
+    showNotification('Для добавления в избранное войдите в аккаунт', 'error');
+    showAuthChoiceModal();
+    return;
+  }
+
+  const product = products.find(p => p.id === productId);
+  const existingIndex = wishlist.findIndex(item => 
+    item.id === productId && item.userId === currentUser.id);
+
+  if (existingIndex >= 0) {
+    wishlist.splice(existingIndex, 1);
+    showNotification(`Товар "${product.name}" удален из избранного`);
+  } else {
+    wishlist.push({
+      ...product,
+      userId: currentUser.id,
+      addedDate: new Date().toISOString()
+    });
+    showNotification(`Товар "${product.name}" добавлен в избранное`);
+  }
+
+  saveWishlist();
+  updateWishlistCounter();
+  updateWishlistButton(productId);
+}
+
+// Удаление из избранного
+function removeFromWishlist(productId) {
+  wishlist = wishlist.filter(item => 
+    !(item.id === productId && item.userId === currentUser.id));
+  saveWishlist();
+  updateWishlistCounter();
+  renderWishlistItems();
+  showNotification('Товар удален из избранного');
+}
+
+// Сохранение в localStorage
+function saveWishlist() {
+  localStorage.setItem('wishlist', JSON.stringify(wishlist));
+}
+
+// Обновление счетчика
+function updateWishlistCounter() {
+  const count = currentUser ? 
+    wishlist.filter(item => item.userId === currentUser.id).length : 0;
+  
+  const counters = document.querySelectorAll('.wishlist-count');
+  counters.forEach(el => el.textContent = count);
+}
+
+// Обновление состояния кнопки
+function updateWishlistButton(productId) {
+  const buttons = document.querySelectorAll(`.add-to-wishlist[data-id="${productId}"]`);
+  const isInWishlist = currentUser && 
+    wishlist.some(item => item.id === productId && item.userId === currentUser.id);
+  
+  buttons.forEach(button => {
+    const icon = button.querySelector('i') || document.createElement('i');
+    icon.className = isInWishlist ? 'fas fa-heart' : 'far fa-heart';
+    
+    if (!button.querySelector('i')) {
+      button.prepend(icon);
+    }
+    
+    button.innerHTML = `${icon.outerHTML} ${isInWishlist ? 'В избранном' : 'В избранное'}`;
+    button.classList.toggle('active', isInWishlist);
+  });
+}
+
+// Отрисовка списка избранного
+function renderWishlistItems() {
+  const container = document.getElementById('wishlistItems');
+  if (!container) return;
+  
+  const userWishlist = wishlist.filter(item => item.userId === currentUser.id);
+  
+  if (userWishlist.length === 0) {
+    container.innerHTML = `
+      <div class="empty-wishlist">
+        <i class="fas fa-heart-broken"></i>
+        <p>Ваш список избранного пуст</p>
+        <button class="btn" onclick="closeModal('profileModal'); showProductGrid()">
+          Перейти к товарам
+        </button>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = userWishlist.map(item => `
+    <div class="wishlist-item" data-id="${item.id}">
+      <div class="wishlist-item-image">
+        <img src="${item.image}" alt="${item.name}" loading="lazy">
+      </div>
+      <div class="wishlist-item-info">
+        <h4>${item.name}</h4>
+        <p class="wishlist-item-price">${item.price.toLocaleString()} ₽</p>
+        <p class="wishlist-item-date">Добавлено: ${new Date(item.addedDate).toLocaleDateString()}</p>
+      </div>
+      <div class="wishlist-item-actions">
+        <button class="btn btn-sm add-to-cart" data-id="${item.id}">
+          <i class="fas fa-shopping-cart"></i> В корзину
+        </button>
+        <button class="btn btn-sm remove-from-wishlist" data-id="${item.id}">
+          <i class="fas fa-trash"></i> Удалить
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Инициализация табов профиля
+function initProfileTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      btn.classList.add('active');
+      const tabId = btn.dataset.tab;
+      document.getElementById(tabId).classList.add('active');
+      
+      if (tabId === 'wishlist') {
+        renderWishlistItems();
+      }
+    });
+  });
+}
+
+// Обновленная функция отрисовки товаров
+function renderProducts(products) {
+  const productGrid = document.getElementById('productGrid');
+  productGrid.innerHTML = products.map(product => {
+    const isInWishlist = currentUser && 
+      wishlist.some(item => item.id === product.id && item.userId === currentUser.id);
+    
+    return `
+      <article class="product-card" data-id="${product.id}">
+        <div class="product-image">
+          <img src="${product.image}" alt="${product.name}" loading="lazy">
+          <button class="wishlist-toggle add-to-wishlist ${isInWishlist ? 'active' : ''}" 
+                  data-id="${product.id}">
+            <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
+            ${isInWishlist ? 'В избранном' : 'В избранное'}
+          </button>
+        </div>
+        <div class="product-details">
+          <h3>${product.name}</h3>
+          <div class="product-meta">
+            <span class="product-price">${product.price.toLocaleString()} ₽</span>
+            <span class="product-category">${product.category}</span>
+          </div>
+          <p class="product-description">${product.description}</p>
+          <div class="product-actions">
+            <button class="btn add-to-cart" data-id="${product.id}">
+              <i class="fas fa-shopping-cart"></i> В корзину
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+  // Подключение обработчиков
+  initWishlist();
+  
+  // Обновление кнопок избранного
+  if (currentUser) {
+    products.forEach(product => {
+      updateWishlistButton(product.id);
+    });
+  }
+  
+  // Обновление счетчика
+  updateWishlistCounter();
+});
+
+// Вспомогательные функции (должны быть определены в основном коде)
+function showNotification(message, type = 'success') {
+  // Реализация функции показа уведомлений
+}
+
+function showAuthChoiceModal() {
+  // Реализация модального окна выбора авторизации
+}
+
+function closeModal(id) {
+  // Реализация закрытия модального окна
+}
+
+function showProductGrid() {
+  // Реализация показа сетки товаров
+}
 
 
 

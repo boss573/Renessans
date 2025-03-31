@@ -2766,7 +2766,150 @@ body::before {
   color: white;
 }
 
+/* Стили для кнопки избранного на карточке товара */
+.wishlist-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
 
+.wishlist-toggle:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+}
+
+.wishlist-toggle.active {
+  color: #8b0000;
+}
+
+.wishlist-toggle i {
+  font-size: 1rem;
+}
+
+/* Стили для модального окна с избранным */
+.wishlist-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.wishlist-items {
+  display: grid;
+  gap: 1rem;
+}
+
+.wishlist-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  border: 1px solid #e0d6c8;
+  transition: all 0.3s ease;
+}
+
+.wishlist-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.wishlist-item-image {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.wishlist-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.wishlist-item-info {
+  flex: 1;
+}
+
+.wishlist-item-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.wishlist-item-price {
+  font-weight: bold;
+  color: #8b0000;
+  margin: 0 0 5px 0;
+}
+
+.wishlist-item-date {
+  font-size: 0.8rem;
+  color: #6b635b;
+  margin: 0;
+}
+
+.wishlist-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.empty-wishlist {
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-wishlist i {
+  font-size: 3rem;
+  color: #e0d6c8;
+  margin-bottom: 1rem;
+}
+
+.empty-wishlist p {
+  margin-bottom: 1rem;
+}
+
+/* Стили для табов в профиле */
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0d6c8;
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  padding: 0.8rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: 'EB Garamond', serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-btn.active {
+  border-bottom-color: #c5a47e;
+  color: #3d2b1f;
+  font-weight: 500;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
 
 
 
