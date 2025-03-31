@@ -310,6 +310,11 @@
 <div class="decor-corner decor-corner-bl"></div>
 <div class="decor-corner decor-corner-br"></div>
 
+    <div id="orderConfirmation" class="order-confirmation">
+    <h3>Заказ принят!</h3>
+    <p>Спасибо за покупку. Мы свяжемся с вами для подтверждения.</p>
+    </div>
+
 <div class="section-with-borders">
     <div class="border-anim border-left"></div>
     <div class="border-anim border-right"></div>
@@ -370,7 +375,7 @@
                           <i class="fas fa-user-plus"></i>
                           <span>Регистрация</span>
                         </a>
-                    </div>
+                      </div>
                 </div>
             </nav>
         </div>
@@ -508,16 +513,27 @@
     <!-- Модальное окно корзины -->
     <div class="modal" id="cartModal">
         <div class="modal-content">
-          <span class="close" onclick="closeModal('cartModal')">&times;</span>
+          <span class="close" onclick="closeCartModal()">&times;</span>
           <h2>Ваша Корзина</h2>
-          <div class="cart-items"></div>
+          <div class="cart-items" id="cartItemsContainer"></div>
           <div class="cart-total">
             <span>Итого:</span>
             <span id="totalPrice">0 ₽</span>
           </div>
           <div class="cart-actions">
-            <button class="btn clear-cart">Очистить корзину</button>
-            <button class="btn checkout-btn" onclick="cart.checkout()">Оформить Заказ</button>
+            <button class="btn clear-cart" id="clearCartBtn">Очистить корзину</button>
+            <button class="btn checkout-btn" id="checkoutBtn">
+                <i class="fas fa-check-circle"></i> Оформить заказ
+              </button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="orderConfirmation" style="display:none;">
+        <div class="order-confirmation-overlay">
+          <div class="order-confirmation-box">
+            <h3>Заказ принят!</h3>
+            <p>Спасибо за покупку</p>
           </div>
         </div>
       </div>
@@ -619,6 +635,7 @@
             </div>
         </div>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

@@ -480,8 +480,26 @@ function showModal(id) {
 }
 
 function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
-  document.body.style.overflow = 'auto';
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // Удаляем модальное окно, если оно было создано динамически
+    if (['profileModal', 'authChoiceModal'].includes(id)) {
+      setTimeout(() => {
+        modal.remove();
+      }, 300);
+    }
+  }
+}
+
+function showModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
 }
 
 window.onclick = function(event) {
@@ -497,39 +515,43 @@ class Cart {
     this.init();
   }
 
-  init() {
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('add-to-cart')) {
-        const productId = parseInt(e.target.dataset.id);
-        const product = products.find(p => p.id === productId);
-        this.addItem(product);
-        this.showNotification(`Товар "${product.name}" добавлен в корзину!`);
-      }
-      
-      if (e.target.classList.contains('remove-from-cart')) {
-        const productId = parseInt(e.target.dataset.id);
-        this.removeItem(productId);
-        this.showNotification(`Товар удален из корзины.`);
-      }
-    });
+ // В классе Cart заменяем init() на:
+init() {
+  this.setupEventListeners();
+  this.updateDisplay();
+  this.updateCounter();
+}
 
-    document.addEventListener('change', (e) => {
-      if (e.target.classList.contains('cart-item-quantity')) {
-        const productId = parseInt(e.target.dataset.id);
-        const quantity = parseInt(e.target.value);
-        this.updateQuantity(productId, quantity);
-      }
-    });
+setupEventListeners() {
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('add-to-cart')) {
+      const productId = parseInt(e.target.dataset.id);
+      const product = products.find(p => p.id === productId);
+      this.addItem(product);
+    }
+    
+    if (e.target.classList.contains('remove-from-cart')) {
+      const productId = parseInt(e.target.dataset.id);
+      this.removeItem(productId);
+    }
+    
+    if (e.target.classList.contains('clear-cart')) {
+      this.clearCart();
+    }
+    
+    if (e.target.id === 'checkoutBtn' || e.target.closest('#checkoutBtn')) {
+      this.checkout();
+    }
+  });
 
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('clear-cart')) {
-        this.clearCart();
-        this.showNotification(`Корзина очищена.`);
-      }
-    });
-
-    this.updateDisplay();
-  }
+  document.addEventListener('change', (e) => {
+    if (e.target.classList.contains('cart-item-quantity')) {
+      const productId = parseInt(e.target.dataset.id);
+      const quantity = parseInt(e.target.value);
+      this.updateQuantity(productId, quantity);
+    }
+  });
+}
 
   addItem(product) {
     const button = document.querySelector(`.add-to-cart[data-id="${product.id}"]`);
@@ -624,7 +646,78 @@ class Cart {
       notification.remove();
     }, 3000);
   }
+  checkout() {
+    if (this.items.length === 0) {
+      this.showNotification('Корзина пуста', 'error');
+      return;
+    }
+
+    // Закрываем модальное окно корзины
+    this.closeCartModal();
+    
+    // Показываем уведомление о принятии заказа
+    this.showOrderConfirmation();
+    
+    // Очищаем корзину
+    this.clearCart();
+    
+    // Обновляем счетчик корзины
+    this.updateCounter();
+  }
+
+  closeCartModal() {
+    const modal = document.getElementById('cartModal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  showOrderConfirmation() {
+    const confirmation = document.getElementById('orderConfirmation');
+    const totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
+    
+    confirmation.innerHTML = `
+      <h3>Заказ принят!</h3>
+      <p>Вы заказали ${totalItems} ${this.getProperWordEnding(totalItems)}</p>
+      <p>Спасибо за доверие!</p>
+    `;
+    
+    confirmation.style.display = 'block';
+    
+    setTimeout(() => {
+      confirmation.style.display = 'none';
+    }, 3000);
+  }
   
+  getProperWordEnding(number) {
+    const lastDigit = number % 10;
+    const lastTwoDigits = number % 100;
+    
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return 'товаров';
+    if (lastDigit === 1) return 'товар';
+    if (lastDigit >= 2 && lastDigit <= 4) return 'товара';
+    return 'товаров';
+  }
+
+  saveOrderToHistory() {
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const order = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      items: this.items,
+      total: this.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      userId: currentUser ? currentUser.id : null
+    };
+    
+    orders.push(order);
+    localStorage.setItem('orders', JSON.stringify(orders));
+    
+    if (currentUser) {
+      currentUser.stats.orders = (currentUser.stats.orders || 0) + 1;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    }
+  }
 }
 
 // Фильтрация товаров
@@ -1026,45 +1119,72 @@ function showAuthChoiceModal() {
     showModal('authChoiceModal');
   }
   
-  // Инициализация при загрузке страницы
-  document.addEventListener('DOMContentLoaded', function() {
-    // Проверяем авторизацию
-    currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-    users = JSON.parse(localStorage.getItem('users')) || [];
-    
-    // Назначаем обработчик кнопке профиля
-    document.getElementById('profileButton').addEventListener('click', handleProfileButtonClick);
-    
-    // Инициализация других компонентов
-    const cart = new Cart();
-    new ProductFilter();
-    initSorting();
-    
-    // Обновляем интерфейс
+  
+  // 2. Добавляем недостающие функции
+  function initAuthForms() {
+    // Инициализация форм авторизации
+    document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      loginUser(email, password);
+    });
+  
+    document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+      registerUser(name, email, password);
+    });
+  }
+  
+  function closeCartModal() {
+    document.getElementById('cartModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+  
+  // 3. Обновляем функцию initAuthSystem
+  function initAuthSystem() {
+    if (users.length === 0) {
+      users.push({
+        id: 1,
+        name: "Тестовый Пользователь",
+        email: "test@example.com",
+        password: "test123",
+        registerDate: new Date().toISOString(),
+        stats: { orders: 0, wishlist: 0 },
+        avatar: '/img/placeholder-avatar.png' // Измените на реальный путь
+      });
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+  
+    initAuthForms(); // Добавляем вызов инициализации форм
     updateAuthUI();
+  }
+  
+  
+
+// 2. Инициализация поиска с проверкой элементов
+function initSearch() {
+  const searchInput = document.getElementById('productSearch');
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', function() {
+    // Реализация поиска
   });
-// Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-  // Инициализация корзины
-  const cart = new Cart();
-  
-  // Инициализация фильтров
-  new ProductFilter();
-  
-  // Инициализация системы аутентификации
-  initAuthSystem();
-  
-  // Инициализация сортировки
-  initSorting();
-  
-  // Обработчик кнопки профиля
-  document.getElementById('profileButton').addEventListener('click', handleProfileButtonClick);
-  
-  // Обработчик для обновления страницы
-  document.getElementById('siteTitle').addEventListener('click', function() {
-    location.reload();
-  });
-});
+}
+
+// 3. Универсальная функция закрытия модальных окон
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+}
+
+
   
 // Функционал добавления в избранное
 function initWishlist() {
@@ -1259,12 +1379,7 @@ function initWishlistHandlers() {
 
 
 
-// Добавьте в инициализацию при загрузке:
-document.addEventListener('DOMContentLoaded', function() {
-  // ... остальная инициализация ...
-  initWishlist();
-  updateWishlistCounter();
-});
+
 
 // Случайное появление элементов при скролле
 document.addEventListener('DOMContentLoaded', () => {
@@ -1298,6 +1413,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function initSearch() {
   const searchInput = document.getElementById('productSearch');
   const searchResults = document.getElementById('searchResults');
+  
+  // Проверяем существование элементов перед инициализацией
+  if (!searchInput || !searchResults) return;
   
   searchInput.addEventListener('input', function() {
     const query = this.value.trim().toLowerCase();
@@ -1351,6 +1469,11 @@ function toggleWishlistItem(productId) {
   saveWishlist();
   updateWishlistCounter();
   updateWishlistButton(productId);
+  
+  // Обновляем отображение в модальном окне профиля, если оно открыто
+  if (document.getElementById('profileModal')) {
+    renderWishlistItems();
+  }
 }
 
 // Удаление из избранного
@@ -1487,11 +1610,6 @@ function scrollToProduct(productId) {
   }
 }
 
-// Инициализировать при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-  initSearch();
-});
-
 document.addEventListener('keydown', function(e) {
   if (e.key === '/' && e.target.tagName !== 'INPUT') {
     e.preventDefault();
@@ -1499,15 +1617,63 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+document.querySelector('.checkout-btn')?.addEventListener('click', function() {
+  cart.checkout();
+});
 
+console.log('Checkout button:', document.getElementById('checkoutBtn'));
+document.getElementById('checkoutBtn')?.addEventListener('click', () => {
+  console.log('Checkout clicked');
+  cart.checkout();
+});
 
-
-
-
-
-
-
-
+document.addEventListener('DOMContentLoaded', function() {
+  // Инициализация корзины
+  const cart = new Cart();
+  
+  // Инициализация системы аутентификации
+  if (typeof initAuthSystem === 'function') {
+    initAuthSystem();
+  }
+  
+  // Инициализация фильтров товаров
+  if (typeof ProductFilter === 'function') {
+    new ProductFilter();
+  }
+  
+  // Инициализация сортировки
+  if (typeof initSorting === 'function') {
+    initSorting();
+  }
+  
+  // Инициализация избранного
+  if (typeof initWishlist === 'function' && typeof updateWishlistCounter === 'function') {
+    initWishlist();
+    updateWishlistCounter();
+  }
+  
+  // Инициализация поиска
+  if (typeof initSearch === 'function') {
+    initSearch();
+  }
+  
+  // Обработчик кнопки профиля
+  const profileButton = document.getElementById('profileButton');
+  if (profileButton && typeof handleProfileButtonClick === 'function') {
+    profileButton.addEventListener('click', handleProfileButtonClick);
+  }
+  
+  // Обработчик для обновления страницы
+  const siteTitle = document.getElementById('siteTitle');
+  if (siteTitle) {
+    siteTitle.addEventListener('click', function() {
+      location.reload();
+    });
+  }
+  
+  // Делаем cart глобально доступным
+  window.cart = cart;
+});
 
 
 
