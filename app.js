@@ -406,6 +406,8 @@ const products = [  {
     description: "4K HDR, Android TV, 55″",
     image: "/img/Смарт-телевизор.png    "
 } ];
+
+
 let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 // Текущая активная сортировка
 let currentSort = 'default';
@@ -622,6 +624,7 @@ class Cart {
       notification.remove();
     }, 3000);
   }
+  
 }
 
 // Фильтрация товаров
@@ -1254,10 +1257,7 @@ function initWishlistHandlers() {
   });
 }
 
-// Обновите кнопки товаров (добавьте в renderProducts):
-`<button class="btn add-to-wishlist" data-id="${product.id}">
-  <i class="fas fa-heart"></i> В избранное
-</button>`
+
 
 // Добавьте в инициализацию при загрузке:
 document.addEventListener('DOMContentLoaded', function() {
@@ -1266,7 +1266,33 @@ document.addEventListener('DOMContentLoaded', function() {
   updateWishlistCounter();
 });
 
-
+// Случайное появление элементов при скролле
+document.addEventListener('DOMContentLoaded', () => {
+  const decorTypes = ['⚜', '❦', '♔', '✒', '✧', '☉', '☽'];
+  
+  window.addEventListener('scroll', () => {
+    if (Math.random() > 0.97) { // 3% chance on scroll
+      createFloatingDecor();
+    }
+  });
+  
+  function createFloatingDecor() {
+    const decor = document.createElement('div');
+    decor.className = 'floating-decor temporary';
+    decor.textContent = decorTypes[Math.floor(Math.random() * decorTypes.length)];
+    decor.style.left = `${Math.random() * 90 + 5}%`;
+    decor.style.top = `${window.scrollY + Math.random() * 300}px`;
+    decor.style.fontSize = `${Math.random() * 2 + 1.5}rem`;
+    decor.style.animationDuration = `${Math.random() * 10 + 8}s`;
+    decor.style.opacity = Math.random() * 0.1 + 0.05;
+    
+    document.body.appendChild(decor);
+    
+    setTimeout(() => {
+      decor.remove();
+    }, 15000);
+  }
+});
 
 
 
