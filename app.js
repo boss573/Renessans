@@ -1294,9 +1294,103 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Поиск товаров
+function initSearch() {
+  const searchInput = document.getElementById('productSearch');
+  const searchResults = document.getElementById('searchResults');
+  
+  searchInput.addEventListener('input', function() {
+    const query = this.value.trim().toLowerCase();
+    
+    if (query.length < 2) {
+      searchResults.style.display = 'none';
+      return;
+    }
+    
+    const results = products.filter(product => 
+      product.name.toLowerCase().includes(query) || 
+      product.description.toLowerCase().includes(query) ||
+      product.category.toLowerCase().includes(query)
+    );
+    
+    displaySearchResults(results);
+  });
+  
+  // Закрытие результатов при клике вне поиска
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-container')) {
+      searchResults.style.display = 'none';
+    }
+  });
+}
 
+function displaySearchResults(results) {
+  const searchResults = document.getElementById('searchResults');
+  
+  if (results.length === 0) {
+    searchResults.innerHTML = '<div class="no-results">Ничего не найдено</div>';
+    searchResults.style.display = 'block';
+    return;
+  }
+  
+  searchResults.innerHTML = results.map(product => `
+    <div class="search-result-item" data-id="${product.id}">
+      <h4>${product.name}</h4>
+      <p>${product.price.toLocaleString()} ₽ • ${getCategoryName(product.category)}</p>
+    </div>
+  `).join('');
+  
+  searchResults.style.display = 'block';
+  
+  // Обработка клика по результату
+  document.querySelectorAll('.search-result-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const productId = parseInt(this.dataset.id);
+      scrollToProduct(productId);
+      searchResults.style.display = 'none';
+    });
+  });
+}
 
+function getCategoryName(category) {
+  const categories = {
+    'home': 'Для дома',
+    'clothing': 'Одежда',
+    'stationery': 'Канцтовары',
+    'furniture': 'Мебель',
+    'electronics': 'Электроника'
+  };
+  return categories[category] || category;
+}
 
+function scrollToProduct(productId) {
+  const productCard = document.querySelector(`.product-card[data-id="${productId}"]`);
+  if (productCard) {
+    // Подсветка товара
+    productCard.style.animation = 'highlightProduct 2s ease';
+    setTimeout(() => {
+      productCard.style.animation = '';
+    }, 2000);
+    
+    // Плавная прокрутка
+    productCard.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
+}
+
+// Инициализировать при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+  initSearch();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === '/' && e.target.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('productSearch').focus();
+  }
+});
 
 
 

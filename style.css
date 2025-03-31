@@ -3252,7 +3252,127 @@ body::after {
   0% { background-position: 0 0; }
   100% { background-position: 0 100px; }
 }
+.search-container {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto 2rem;
+}
 
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid #c5a47e;
+  border-radius: 30px;
+  overflow: hidden;
+  background: rgba(253, 245, 230, 0.8);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 
+#productSearch {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  color: #3d2b1f;
+  outline: none;
+}
 
+#productSearch::placeholder {
+  color: #6b635b;
+  opacity: 0.7;
+}
 
+.search-btn {
+  background: #3d2b1f;
+  color: white;
+  border: none;
+  padding: 0 18px;
+  height: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+  background: #2b1e14;
+}
+
+.search-btn i {
+  font-size: 1.2rem;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #fdf5e6;
+  border: 1px solid #e0d6c8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+}
+
+.search-result-item {
+  padding: 12px 20px;
+  border-bottom: 1px solid #e0d6c8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-result-item:hover {
+  background: rgba(197, 164, 126, 0.1);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item h4 {
+  margin: 0 0 5px 0;
+  color: #3d2b1f;
+  font-family: 'EB Garamond', serif;
+}
+
+.search-result-item p {
+  margin: 0;
+  color: #6b635b;
+  font-size: 0.9rem;
+}
+
+.no-results {
+  padding: 15px;
+  text-align: center;
+  color: #6b635b;
+}
+@keyframes highlightProduct {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(197, 164, 126, 0); }
+  50% { box-shadow: 0 0 0 10px rgba(197, 164, 126, 0.3); }
+}
+
+.search-box {
+  transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-color: #8b0000;
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    max-width: 100%;
+    margin: 0 0 1.5rem 0;
+    padding: 0 1rem;
+  }
+  
+  #productSearch {
+    padding: 10px 15px;
+  }
+}
